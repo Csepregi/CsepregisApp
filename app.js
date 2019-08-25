@@ -18,12 +18,12 @@ var commentRoutes    = require("./routes/comments"),
     indexRoutes       = require("./routes/index");
 
 
-//var url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp_v3, { useNewUrlParser: true }"
-//mongoose.connect(url);
+var url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp_v5, { useNewUrlParser: true }"
+mongoose.connect(url);
 
-//mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true });
-mongoose.connect("mongodb://localhost: 27017/yelp_camp", {useNewUrlParser: true});
-//mongoose.connect("mongodb://gabor:Hangfive2019@ds026658.mlab.com:26658/yelpcamp", {useNewUrlParser: true});
+mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true });
+//mongoose.connect("mongodb://localhost: 27017/yelp_camp", {useNewUrlParser: true});
+mongoose.connect("mongodb://gabor:Hangfive2019@ds026658.mlab.com:26658/yelpcamp", {useNewUrlParser: true});
 
 
 //mongodb://gabor:Hangfive2019@ds026658.mlab.com:26658/yelpcamp
