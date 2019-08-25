@@ -22,7 +22,7 @@ router.get("/", function(req, res){
         if(err){
             console.log(err);
         } else {
-            res.render("campgrounds/index", {campgrounds: AllCampgrounds}); //pass the user as current user
+            res.render("campgrounds/index", {campgrounds: AllCampgrounds, currentUser: req.user}); //pass the user as current user
                                             //campgrounds the name, AllCampgrounds the data
         }
     })

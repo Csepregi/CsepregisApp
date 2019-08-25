@@ -22,7 +22,7 @@ var commentRoutes    = require("./routes/comments"),
 //mongoose.connect(url);
 
 //mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true });
-mongoose.connect("mongodb://localhost: 27017/yelp_camp_v3", {useNewUrlParser: true});
+mongoose.connect("mongodb://localhost: 27017/yelp_camp", {useNewUrlParser: true});
 //mongoose.connect("mongodb://gabor:Hangfive2019@ds026658.mlab.com:26658/yelpcamp", {useNewUrlParser: true});
 
 
@@ -32,7 +32,7 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public")); //dirname refers to the directory that the script is running
 app.use(methodOverride("_method"));
 app.use(flash());
-seedDB(); //seed the database //we export the function
+//seedDB(); //seed the database //we export the function
 
 //PASSPORT CONFIGURATION
 app.use(require("express-session")({
