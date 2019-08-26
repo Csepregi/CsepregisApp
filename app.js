@@ -17,13 +17,16 @@ var commentRoutes    = require("./routes/comments"),
     campgroundRoutes = require("./routes/campgrounds"),
     indexRoutes       = require("./routes/index");
 
+    console.log(process.env.DATABASEURL);
 
-//var url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp_v5, { useNewUrlParser: true }"
-//mongoose.connect(url);
+var url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp, { useNewUrlParser: true }"
+mongoose.connect(url);
 
 //mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true });
 
 //mongoose.connect("mongodb://localhost: 27017/yelp_camp", {useNewUrlParser: true});
+
+//mongoose.connect(process.env.DATABASEURL)
 
 mongoose.connect("mongodb+srv://gabor:hangfive2019@yelpcamp-f3q6z.mongodb.net/test", {
     useNewUrlParser: true,
