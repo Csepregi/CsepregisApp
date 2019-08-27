@@ -4,7 +4,7 @@ var passport = require("passport");
 var User = require("../models/user");
 
 //root route
-router.get("/", function(req, res){
+router.get("/", (req, res) => {
     res.render("landing")
 });
 
@@ -13,21 +13,25 @@ router.get("/", function(req, res){
 //AUTH ROUTES
 //show register form
 //
-router.get("/register", function(req, res){
-    res.render("register");
+router.get("/register", (req, res) => {
+    res.render("register", {page:'register'});
 }); 
 
 //Sign up logic
 //registráljuk és utána login in
-router.post("/register", function(req, res){
+router.post("/register", (req, res) => {
     var newUser = new User({username: req.body.username});
-    User.register(newUser, req.body.password, function(err, user) {  //register() provided by passport local mongoose package
-            if(err){                                                //a register() hasheli
+    User.register(newUser, req.body.password, (err, user) => {  //register() provided by passport local mongoose package
+            // if(err){                                                //a register() hasheli
+            //     console.log(err);
+            //     req.flash("error", err.message); //err coming from password
+            //     return res.render("register")
+            // }
+            if(err){
                 console.log(err);
-                req.flash("error", err.message); //err coming from password
-                return res.render("register")
+                return res.render("register", {error: err.message});
             }
-            passport.authenticate("local")(req, res, function(){  //local strategy
+            passport.authenticate("local")(req, res, () => {  //local strategy
                 req.flash("success", "Welcome to the YelpCamp " + user.username);
                 res.redirect("/campgrounds");            
             })
@@ -35,8 +39,8 @@ router.post("/register", function(req, res){
 })
 
 //show login form
-router.get("/login", function(req, res){
-    res.render("login");//under the key of message we run the message what we defined in the middleware
+router.get("/login", (req, res) => {
+    res.render("login", {page:'login'});//under the key of message we run the message what we defined in the middleware
 })
 //handling login logis //middleware and callback
 //vizsgálja , hogy a user létezik e már 

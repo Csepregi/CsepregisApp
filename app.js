@@ -19,6 +19,8 @@ var commentRoutes    = require("./routes/comments"),
 
     console.log(process.env.DATABASEURL);
 
+mongoose.Promise = global.Promise;
+
 var url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp, { useNewUrlParser: true }"
 mongoose.connect(url);
 
@@ -27,15 +29,18 @@ mongoose.connect(url);
 //mongoose.connect("mongodb://localhost: 27017/yelp_camp", {useNewUrlParser: true});
 
 //mongoose.connect(process.env.DATABASEURL)
+mongoose.connect(url, { useNewUrlParser: true } )
+      .then(() => console.log(`Database connected`))
+      .catch(err => console.log(`Database connection error: ${err.message}`));
 
-mongoose.connect("mongodb+srv://gabor:hangfive2019@yelpcamp-f3q6z.mongodb.net/test", {
-    useNewUrlParser: true,
-    useCreateIndex: true
-}).then(() => {
-    console.log('Connected to DB!');
-}).catch(err => {
-    console.log('ERROR:', err.message);
-});
+// mongoose.connect("mongodb+srv://gabor:hangfive2019@yelpcamp-f3q6z.mongodb.net/test", {
+//     useNewUrlParser: true,
+//     useCreateIndex: true
+// }).then(() => {
+//     console.log('Connected to DB!');
+// }).catch(err => {
+//     console.log('ERROR:', err.message);
+// });
 
 
 //mongodb://gabor:Hangfive2019@ds026658.mlab.com:26658/yelpcamp
