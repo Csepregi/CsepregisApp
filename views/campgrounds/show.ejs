@@ -15,9 +15,12 @@
         
         <div class="col-md-9">
             <div class="thumbnail">
-                <img class="image-responsive" src="<%= campground.image %>">
+                <div>
+                <% campground.image.forEach(function(img){ %>
+                    <img class="image-responsive" src="<%= img.url %>">
+               <% }); %>
+            </div>
                 <div class="caption">
-                    <h4 class="pull-right">$<%= campground.price %>/night</h4>
                     <h4><a><%=campground.name%></a></h4>
                     <p><%= campground.description %></p>
                     <p>
@@ -90,12 +93,6 @@
     }
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD2iqdZ6tofCYuTwl5YkbtRYBJuoHqPjo&callback=initMap"></script>
-
-
-
-
-
-
 
 <!--campground is the whole object-->
 
