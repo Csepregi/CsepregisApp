@@ -5,6 +5,7 @@ var middleware = require("../middleware");
 var NodeGeocoder = require('node-geocoder');
 var request = require("request");
 var multer = require('multer');
+var { getCampgrounds } = require('../controllers/campgrounds');
 
 var storage = multer.diskStorage({
   filename: function(req, file, callback) {
@@ -37,20 +38,21 @@ var options = {
   var geocoder = NodeGeocoder(options);
 
 //INDEX - show all campgrounds
-router.get("/", (req, res) => {
-    //Get all campgrounds from DB
-    // {} all campgrounds
-    console.log(req.user);
-    Campground.find({}, (err, AllCampgrounds) => {
-        if(err){
-            console.log(err);
-        } else {
-            res.render("campgrounds/index", {campgrounds: AllCampgrounds, currentUser: req.user, page: 'campgrounds'}); //pass the user as current user
-                                            //campgrounds the name, AllCampgrounds the data
-        }
-    })
-        //res.render("campgrounds", {campgrounds: campgrounds})
-})
+router.get("/", middleware.errorHandler(getCampgrounds));
+// router.get("/", (req, res) => {
+//     //Get all campgrounds from DB
+//     // {} all campgrounds
+//     console.log(req.user);
+//     Campground.find({}, (err, AllCampgrounds) => {
+//         if(err){
+//             console.log(err);
+//         } else {
+//             res.render("campgrounds/index", {campgrounds: AllCampgrounds, currentUser: req.user, page: 'campgrounds'}); //pass the user as current user
+//                                             //campgrounds the name, AllCampgrounds the data
+//         }
+//     })
+//         //res.render("campgrounds", {campgrounds: campgrounds})
+// })
 
 //CREATE - add new campground to the DB
 // router.post("/", middleware.isLoggedIn, function(req, res){
@@ -80,11 +82,11 @@ router.get("/", (req, res) => {
     
 // });
 
-router.post("/", middleware.isLoggedIn, upload.array('image', 2), async (req, res) => {
-  req.body.campground.image = [];
+router.post("/", middleware.isLoggedIn, upload.array('images', 2), async (req, res) => {
+  req.body.campground.images = [];
   for(const file of req.files){
     const image = await cloudinary.v2.uploader.upload(file.path)
-    req.body.campground.image.push({
+    req.body.campground.images.push({
       url: image.secure_url,
       public_id: image.public_id
     });
@@ -174,8 +176,38 @@ router.get("/:id/edit", middleware.checkCampgroundOwnership, (req, res) => {
 })
  
 
-router.put("/:id", upload.array('image', 2), middleware.checkCampgroundOwnership, async (req, res) => {
-   
+router.put("/:id", upload.array('images', 2), middleware.checkCampgroundOwnership, async (req, res, next) => {
+  let campground = await Campground.findById(req.params.id);
+  //check if there is any image for deletion
+  if(req.body.deleteImages && req.body.deleteImages.length){
+    eval(require('locus'))
+    // assign deleteImages from req.body to its own variable
+    for(const public_id of req.body.deleteImages){
+      //delete images from cloudinary
+      await cloudinary.v2.uploader.destroy(public_id);
+      //delete image from post.images
+      for(const image of campground.images){
+        if(image.public_id === public_id){
+          let index = campground.images.indexOf(image);
+          campground.images.splice(index, 1);
+        }
+      }
+    }
+  }
+  //check if there are any new images for upload
+  if(req.files){
+  for(const file of req.files){
+    const image = await cloudinary.v2.uploader.upload(file.path)
+    // add images to post.images array
+    campground.image.push({
+      url: image.secure_url,
+      public_id: image.public_id
+    });
+  }
+}
+campground.save();
+res.redirect("/campgrounds/" + campground._id);
+});
     //var newData = {name: req.body.name, image: req.body.image,price: req.body.price, description: req.body.desc};
     // geocoder.geocode(req.body.location,  (err, data) => {
     //   if (err || !data.length) {
@@ -214,42 +246,21 @@ router.put("/:id", upload.array('image', 2), middleware.checkCampgroundOwnership
     //   });
 
 
-      let campground = await Campground.findById(req.params.id);
-      //check if there is any image for deletion
-      if(req.body.deleteImages && req.body.deleteImages.length){
-        // assign deleteImages from req.body to its own variable
-        let deleteImages = req.body.deleteImages;
-        console.log(deleteImages);
-        for(const public_id of deleteImages){
-          //delete images from cloudinary
-          await cloudinary.v2.uploader.destroy(public_id);
-          //delete image from post.images
-          for(const image of campground.image){
-            if(image.public_id === public_id){
-              let index = campground.image.indexOf(image);
-              campground.image.splice(index, 1);
-            }
-          }
-        }
-      }
-      //check if there are any new images for upload
-      if(req.files){
-      for(const file of req.files){
-        const image = await cloudinary.v2.uploader.upload(file.path)
-        // add images to post.images array
-        campground.image.push({
-          url: image.secure_url,
-          public_id: image.public_id
-        });
-      }
-    }
-    // campground.name = req.body.campgroound.name;
-    // campground.description = req.body.campgroound.description;
-    // campground.location = req.body.campgroound.location;
+      
+    // geocoder.geocode(req.body.location,  (err, data) => {
+    //     if (err || !data.length) {
+    //       req.flash('error', 'Invalid address');
+    //       return res.redirect('back');
+    //     }
+    //     req.body.campground.lat = data[0].latitude;
+    //     req.body.campground.lng = data[0].longitude;
+    //     req.body.campground.location = data[0].formattedAddress;
+    //   });
+    //  campground.name = req.body.campground.name;
+    //  campground.description = req.body.campground.description;
+    //  campground.location = req.body.campground.location;
 
-    campgroound.save();
-    res.redirect("/campgrounds/" + campground._id);
-  });
+   
 
   //   Campground.findByIdAndUpdate(req.params.id,req.body.campground, async function(err, campground){
   //       if(err){

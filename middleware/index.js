@@ -6,6 +6,13 @@ var Comment = require("../models/comment");
 // all the middleare goes here
 var middlewareObj = {};
 
+middlewareObj.errorHandler = (fn) => 
+        (req, res, next) => {
+            Promise.resolve(fn(req, res, next))
+                .catch(next);
+        }
+
+
 middlewareObj.checkCampgroundOwnership = function(req, res, next) {
  if(req.isAuthenticated()){
         Campground.findById(req.params.id, function(err, foundCampground){
@@ -48,8 +55,8 @@ middlewareObj.checkCommentOwnership = function(req, res, next) {
         res.redirect("back");
     }
 }
-
-middlewareObj.isLoggedIn = function(req, res, next){ // ezt a függvényt bárhova tehetjük ahol azt akarjuk , hogy a felhasználó legyen bejelentkezve
+// this fn can be anywhere , => the user have to be loged in
+middlewareObj.isLoggedIn = function(req, res, next){ 
     if(req.isAuthenticated()){
         return next();
     }
