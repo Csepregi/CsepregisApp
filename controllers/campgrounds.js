@@ -80,7 +80,6 @@ module.exports = {
             let campground = await Campground.findById(req.params.id);
             //check if there is any image for deletion
             if(req.body.deleteImages && req.body.deleteImages.length){
-                eval(require('locus'));
               // assign deleteImages from req.body to its own variable
               for(const public_id of req.body.deleteImages){
                 //delete images from cloudinary
@@ -94,23 +93,35 @@ module.exports = {
                 }
               }
             }
+            geocoder.geocode(req.body.location, (err, data) => {
+                if (err || !data.length) {
+                    console.log(err);
+                    req.flash('error', 'Invalid address');
+                    return res.redirect('back');
+                }
+                req.body.campground.lat = data[0].latitude;
+                req.body.campground.lng = data[0].longitude;
+                req.body.campground.location = data[0].formattedAddress;
+            })
             //check if there are any new images for upload
             if(req.files){
             for(const file of req.files){
               let image = await cloudinary.v2.uploader.upload(file.path)
               // add images to post.images array
-              campground.image.push({
+              campground.images.push({
                 url: image.secure_url,
                 public_id: image.public_id
               });
             }
+
+           
           }
           campground.name = req.body.campground.name;
           campground.description = req.body.campground.description;
-          campground.location = req.body.campground.location;
+         // campground.location = req.body.campground.location;
 
           campground.save();
-          res.redirect("/campgrounds/" + campground._id);
+          res.redirect(`/campgrounds/${campground._id}`);
           }
         }
     

@@ -42,7 +42,7 @@ router.get("/:id", showCampground);
 //Edit campground route
 router.get("/:id/edit", middleware.checkCampgroundOwnership, middleware.errorHandler(getEditCampground));
 
-router.put("/:id", upload.array('images', 2), middleware.errorHandler(editCampground), middleware.checkCampgroundOwnership);
+router.put("/:id", upload.array('images', 2), middleware.checkCampgroundOwnership,  middleware.errorHandler(editCampground));
  
 //DESTROY CAMPGROUND ROUTE
 router.delete("/:id", middleware.checkCampgroundOwnership, (req, res) => {
