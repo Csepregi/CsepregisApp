@@ -26,6 +26,10 @@ module.exports = {
         res.render("campgrounds/index", {campgrounds, currentUser: req.user, page: 'campgrounds'})
     }, 
 
+    async newCampground (req, res, next)  {
+           res.render("campgrounds/new")
+    },
+
     async createCampground(req, res, next){
         req.body.campground.images = [];
         for(const file of req.files){
@@ -53,10 +57,30 @@ module.exports = {
         let campground = await Campground.create(req.body.campground)
         res.redirect('/campgrounds/' + campground.id);
         }, 
+
+        async showCampground(req, res, next){
+         //find the campground with provided id
+            Campground.findById(req.params.id).populate("comments").exec((err, foundCampground) => {
+                if(err){
+                    console.log(err)
+                } else {
+                    console.log(foundCampground);
+                    //render show template that campground
+                    res.render("campgrounds/show", {campground: foundCampground});
+                }
+            })
+        },
+
+        async getEditCampground(req, res, next){
+            let campground = await Campground.findById(req.params.id);
+                         res.render("campgrounds/edit", {campground});
+        },
+
         async editCampground(req, res, next){
             let campground = await Campground.findById(req.params.id);
             //check if there is any image for deletion
             if(req.body.deleteImages && req.body.deleteImages.length){
+                eval(require('locus'));
               // assign deleteImages from req.body to its own variable
               for(const public_id of req.body.deleteImages){
                 //delete images from cloudinary
@@ -73,7 +97,7 @@ module.exports = {
             //check if there are any new images for upload
             if(req.files){
             for(const file of req.files){
-              const image = await cloudinary.v2.uploader.upload(file.path)
+              let image = await cloudinary.v2.uploader.upload(file.path)
               // add images to post.images array
               campground.image.push({
                 url: image.secure_url,
@@ -81,6 +105,10 @@ module.exports = {
               });
             }
           }
+          campground.name = req.body.campground.name;
+          campground.description = req.body.campground.description;
+          campground.location = req.body.campground.location;
+
           campground.save();
           res.redirect("/campgrounds/" + campground._id);
           }
