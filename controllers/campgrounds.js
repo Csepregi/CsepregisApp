@@ -60,7 +60,7 @@ module.exports = {
 
         async showCampground(req, res, next){
          //find the campground with provided id
-            Campground.findById(req.params.id).populate("comments").exec((err, foundCampground) => {
+            Campground.findById(req.params.id).populate("comments likes").exec((err, foundCampground) => {
                 if(err){
                     console.log(err)
                 } else {
