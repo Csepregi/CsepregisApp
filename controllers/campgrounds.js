@@ -1,7 +1,7 @@
 const Campground = require('../models/campground');
-var cloudinary = require('cloudinary');
-var NodeGeocoder = require('node-geocoder');
- var request = require("request");
+const cloudinary = require('cloudinary');
+const NodeGeocoder = require('node-geocoder');
+const request = require("request");
  
 
 cloudinary.config({ 
@@ -10,15 +10,14 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-
-  var options = {
+  const options = {
     provider: 'google',
     httpAdapter: 'https',
     apiKey: process.env.GEOCODER_API_KEY,
     formatter: null
   };
    
-  var geocoder = NodeGeocoder(options);
+  const geocoder = NodeGeocoder(options);
 
 module.exports = {
     async getCampgrounds(req, res, next){
@@ -80,7 +79,7 @@ module.exports = {
             let campground = await Campground.findById(req.params.id);
             //check if there is any image for deletion
             if(req.body.deleteImages && req.body.deleteImages.length){
-              // assign deleteImages from req.body to its own variable
+              // assign deleteImages from req.body to its own constiable
               for(const public_id of req.body.deleteImages){
                 //delete images from cloudinary
                 await cloudinary.v2.uploader.destroy(public_id);
@@ -122,6 +121,55 @@ module.exports = {
 
           campground.save();
           res.redirect(`/campgrounds/${campground._id}`);
-          }
+          },
+
+          async takeLike(req, res, next){
+            try {
+              let foundCampground = await Campground.findById(req.params.id);  
+              // check if req.user._id exists in foundCampground.likes
+                const foundUserLike = foundCampground.likes.some((like) => {
+                    return like.equals(req.user._id);
+                });
+        
+                if (foundUserLike) {
+                    // user already liked, removing like
+                    foundCampground.likes.pull(req.user._id);
+                } else {
+                    // adding the new user like
+                    foundCampground.likes.push(req.user);
+                }
+        
+                foundCampground.save((err) => {
+                    if (err) {
+                        console.log(err);
+                        return res.redirect("/campgrounds");
+                    }
+                    return res.redirect("/campgrounds/" + foundCampground._id);
+                });
+            } catch(error){
+                console.log(error)
+            }
+        },
+
+        async deletePost(req, res, next){
+          Campground.findById(req.params.id, async (err, campground) => {
+            if(err){
+                req.flash("error", err.message);
+                return res.redirect("back");
+            } try {
+              for(const image of campground.images){
+                await cloudinary.v2.uploader.destroy(image.public_id);           
+              }
+             await campground.remove();
+                req.flash('success', 'Campground deleted successfully')
+                res.redirect('/campgrounds');
+            } catch (error) {
+                if(err){
+                    req.flash("error", err.message);
+                    return res.redirect("back");
+                }
+            }
+          })
         }
+      }
     

@@ -1,5 +1,5 @@
 require('dotenv').config();
-var express         = require("express"),
+const express         = require("express"),
     app             = express(),
     bodyParser      = require("body-parser"),
     mongoose        = require("mongoose"), 
@@ -13,7 +13,7 @@ var express         = require("express"),
     seedDB          = require("./seeds");
 
 //requiring routes
-var commentRoutes    = require("./routes/comments"),
+const commentRoutes    = require("./routes/comments"),
     campgroundRoutes = require("./routes/campgrounds"),
     indexRoutes       = require("./routes/index");
 
@@ -21,14 +21,10 @@ var commentRoutes    = require("./routes/comments"),
 
 mongoose.Promise = global.Promise;
 
-var url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp, { useNewUrlParser: true }"
+const url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp, { useNewUrlParser: true }"
 mongoose.connect(url);
 
-//mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true });
 
-//mongoose.connect("mongodb://localhost: 27017/yelp_camp", {useNewUrlParser: true});
-
-//mongoose.connect(process.env.DATABASEURL)
 mongoose.connect(url, { useNewUrlParser: true } )
       .then(() => console.log(`Database connected`))
       .catch(err => console.log(`Database connection error: ${err.message}`));
@@ -42,8 +38,6 @@ mongoose.connect(url, { useNewUrlParser: true } )
 //     console.log('ERROR:', err.message);
 // });
 
-
-//mongodb://gabor:Hangfive2019@ds026658.mlab.com:26658/yelpcamp
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public")); //dirname refers to the directory that the script is running

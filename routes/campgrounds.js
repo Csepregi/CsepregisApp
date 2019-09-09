@@ -12,7 +12,9 @@ var { getCampgrounds,
       createCampground,
       editCampground,
       showCampground,
-      getEditCampground
+      getEditCampground,
+      takeLike,
+      deletePost
     } = require('../controllers/campgrounds');
 
 var storage = multer.diskStorage({
@@ -45,54 +47,10 @@ router.get("/:id/edit", middleware.checkCampgroundOwnership, middleware.errorHan
 router.put("/:id", upload.array('images', 2), middleware.checkCampgroundOwnership,  middleware.errorHandler(editCampground));
  
 //DESTROY CAMPGROUND ROUTE
-router.delete("/:id", middleware.checkCampgroundOwnership, (req, res) => {
-    Campground.findById(req.params.id, async (err, campground) => {
-        if(err){
-            req.flash("error", err.message);
-            return res.redirect("back");
-        } try {
-            await cloudinary.v2.uploader.destroy(campground.imageId);
-            campground.remove();
-            req.flash('success', 'Campground deleted successfully')
-            res.redirect('/campgrounds');
-        } catch (error) {
-            if(err){
-                req.flash("error", err.message);
-                return res.redirect("back");
-            }
-        }
-    })
-})
+router.delete("/:id", middleware.checkCampgroundOwnership, middleware.errorHandler(deletePost));
 
 // Campground Like Route
-router.post("/:id/like", middleware.isLoggedIn, function (req, res) {
-    Campground.findById(req.params.id, function (err, foundCampground) {
-        if (err) {
-            console.log(err);
-            return res.redirect("/campgrounds");
-        }
+router.post("/:id/like", middleware.isLoggedIn, middleware.errorHandler(takeLike));
 
-        // check if req.user._id exists in foundCampground.likes
-        var foundUserLike = foundCampground.likes.some(function (like) {
-            return like.equals(req.user._id);
-        });
-
-        if (foundUserLike) {
-            // user already liked, removing like
-            foundCampground.likes.pull(req.user._id);
-        } else {
-            // adding the new user like
-            foundCampground.likes.push(req.user);
-        }
-
-        foundCampground.save(function (err) {
-            if (err) {
-                console.log(err);
-                return res.redirect("/campgrounds");
-            }
-            return res.redirect("/campgrounds/" + foundCampground._id);
-        });
-    });
-});
 
 module.exports = router;
