@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const Campground = require("../models/campground");
 const {errorHandler, isLoggedIn, checkCampgroundOwnership} = require("../middleware");
-// var NodeGeocoder = require('node-geocoder');
-const request = require("request");
+const { cloudinary, storage } = require('../cloudinary');
 const multer = require('multer');
-const upload = multer({ 'dest': 'uploads/', fileFilter: imageFilter});
+// var NodeGeocoder = require('node-geocoder');
+
+const upload = multer({ storage });
+
  
 var { getCampgrounds,
       newCampground,
@@ -17,18 +18,6 @@ var { getCampgrounds,
       deletePost
     } = require('../controllers/campgrounds');
 
-var storage = multer.diskStorage({
-  filename: function(req, file, callback) {
-    callback(null, Date.now() + file.originalname);
-  }
-});
-var imageFilter = function (req, file, cb) {
-    // accept image files only
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
-        return cb(new Error('Only image files are allowed!'), false);
-    }
-    cb(null, true);
-};
 
 
 //INDEX - show all campgrounds

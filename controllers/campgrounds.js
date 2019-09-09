@@ -1,14 +1,6 @@
 const Campground = require('../models/campground');
-const cloudinary = require('cloudinary');
 const NodeGeocoder = require('node-geocoder');
-const request = require("request");
- 
-
-cloudinary.config({ 
-  cloud_name: 'surfshop', 
-  api_key: process.env.CLOUDINARY_API_KEY, 
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
+const { cloudinary } = require('../cloudinary');
 
   const options = {
     provider: 'google',
@@ -32,10 +24,9 @@ module.exports = {
     async createCampground(req, res, next){
         req.body.campground.images = [];
         for(const file of req.files){
-            const image = await cloudinary.v2.uploader.upload(file.path)
             req.body.campground.images.push({
-            url: image.secure_url,
-            public_id: image.public_id
+              url: file.secure_url,
+              public_id: file.public_id
             });
             req.body.campground.author = {
             id: req.user._id,
@@ -104,12 +95,10 @@ module.exports = {
             })
             //check if there are any new images for upload
             if(req.files){
-            for(const file of req.files){
-              let image = await cloudinary.v2.uploader.upload(file.path)
-              // add images to post.images array
+            for(const file of req.files){              // add images to post.images array
               campground.images.push({
-                url: image.secure_url,
-                public_id: image.public_id
+                url: file.secure_url,
+                public_id: file.public_id
               });
             }
 
