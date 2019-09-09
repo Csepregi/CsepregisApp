@@ -1,11 +1,11 @@
-var express = require("express");
-var router = express.Router();
-var Campground = require("../models/campground");
-var middleware = require("../middleware");
+const express = require("express");
+const router = express.Router();
+const Campground = require("../models/campground");
+const {errorHandler, isLoggedIn, checkCampgroundOwnership} = require("../middleware");
 // var NodeGeocoder = require('node-geocoder');
-var request = require("request");
-var multer = require('multer');
-var upload = multer({ 'dest': 'uploads/', fileFilter: imageFilter});
+const request = require("request");
+const multer = require('multer');
+const upload = multer({ 'dest': 'uploads/', fileFilter: imageFilter});
  
 var { getCampgrounds,
       newCampground,
@@ -32,25 +32,25 @@ var imageFilter = function (req, file, cb) {
 
 
 //INDEX - show all campgrounds
-router.get("/", middleware.errorHandler(getCampgrounds));
+router.get("/", errorHandler(getCampgrounds));
 
 //NEW - show form to create new campground
-router.get("/new", middleware.isLoggedIn, newCampground);
+router.get("/new", isLoggedIn, newCampground);
 
-router.post("/",upload.array('images', 2), middleware.errorHandler(createCampground) ,middleware.isLoggedIn)
+router.post("/",upload.array('images', 2), isLoggedIn, errorHandler(createCampground))
 //SHOW - shows more info about one campground
 router.get("/:id", showCampground);
 
 //Edit campground route
-router.get("/:id/edit", middleware.checkCampgroundOwnership, middleware.errorHandler(getEditCampground));
+router.get("/:id/edit", checkCampgroundOwnership, errorHandler(getEditCampground));
 
-router.put("/:id", upload.array('images', 2), middleware.checkCampgroundOwnership,  middleware.errorHandler(editCampground));
+router.put("/:id", upload.array('images', 2), checkCampgroundOwnership, errorHandler(editCampground));
  
 //DESTROY CAMPGROUND ROUTE
-router.delete("/:id", middleware.checkCampgroundOwnership, middleware.errorHandler(deletePost));
+router.delete("/:id", checkCampgroundOwnership, errorHandler(deletePost));
 
 // Campground Like Route
-router.post("/:id/like", middleware.isLoggedIn, middleware.errorHandler(takeLike));
+router.post("/:id/like", isLoggedIn, errorHandler(takeLike));
 
 
 module.exports = router;

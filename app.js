@@ -10,6 +10,7 @@ const express         = require("express"),
     Campground      = require("./models/campground"),
     Comment         = require("./models/comment"),
     User            = require("./models/user"),
+    session         = require('express-session'),
     seedDB          = require("./seeds");
 
 //requiring routes
@@ -46,7 +47,7 @@ app.use(flash());
 //seedDB(); //seed the database //we export the function
 
 //PASSPORT CONFIGURATION
-app.use(require("express-session")({
+app.use(session({
     secret: "Pálinka is the best dog", 
     resave: false,
     saveUninitialized: false
@@ -58,7 +59,13 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+
+
 app.use(function(req, res, next){   //we pass every route the current user, and pass the next code (next())
+    // res.locals.message = err.message;
+    // res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // res.status(err.status || 500);
+    // res.render('error');
     res.locals.currentUser = req.user;
     res.locals.error = req.flash("error");//if there is anything in the template it will exit in the message template ,variable
     res.locals.success = req.flash("success");
