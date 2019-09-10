@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const User = require("../models/user");
-var { postRegister, postLogin, getLogout } = require('../controllers/index');
+var { getRegister, postRegister, getLogin, postLogin, getLogout } = require('../controllers/index');
 const {errorHandler} = require('../middleware');
 
 //root route
@@ -13,9 +13,10 @@ router.get("/", (req, res) => {
 //AUTH ROUTES
 //show register form
 //
-router.get("/register", (req, res) => {
-    res.render("register", {page:'register'});
-}); 
+router.get("/register", getRegister);
+// router.get("/register", (req, res) => {
+//     res.render("register", {page:'register'});
+// }); 
 
 //Sign up logic
 //registration and then login in
@@ -41,12 +42,13 @@ router.post("/register", errorHandler(postRegister));
 // })
 
 //show login form
-router.get("/login", (req, res) => {
-    res.render("login", {page:'login'});//under the key of message we run the message what we defined in the middleware
-})
+router.get("/login", getLogin);
+// router.get("/login", (req, res) => {
+//     res.render("login", {page:'login'});//under the key of message we run the message what we defined in the middleware
+// })
 //handling login logis //middleware and callback
 //vizsgálja , hogy a user létezik e már 
-router.post("/login", postLogin);
+router.post("/login", errorHandler(postLogin));
 // passport.authenticate("local",   //use  LocalStrategy
 // {                                                       //authenticate comes from passport local mongoose package
 //     successRedirect: "/campgrounds",

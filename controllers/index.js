@@ -3,19 +3,41 @@ const passport = require("passport");
 
 
 module.exports = {
+
+    getRegister(req, res, next)  {
+        res.render("register", {page:'register'});
+    },
+
     async postRegister(req, res, next){
         const newUser = new User({username: req.body.username});
-        await User.register(newUser, req.body.password)
+        //await User.register(newUser, req.body.password)
            // passport.authenticate("local")(req, res, () => {  //local strategy
-                req.flash("success", "Welcome to the YelpCamp " + newUser.username);
-                res.redirect("/campgrounds");            
+                //req.flash("success", "Welcome to the YelpCamp " + newUser.username);
+                //res.redirect("/campgrounds");            
             //})
+            let user = await User.register(newUser, req.body.password);
+            req.login(user, function(err) {
+              if (err) { return next(err); }
+              req.session.success = `Welcome to Surf Shop, ${user.username}!`;
+              res.redirect('/campgrounds');
+            });
     },
-     postLogin(req, res, next){
-        passport.authenticate("local", {                                                      
-            successRedirect: "/campgrounds",
-            failureRedirect: "/login"
-        })(req, res, next);
+
+    getLogin(req, res, next) {
+        res.render("login", {page:'login'});//under the key of message we run the message what we defined in the middleware
+    },
+
+    async postLogin(req, res, next){
+        const {username, password} = req.body;
+        const {user, err} = await User.authenticate()(username, passport);
+        if(!user && error) return next(error);
+        res.login(user, function(err){
+            if(err) return next(err);
+            req.session.success = `Welcome back ${username}!`;
+            const redirectUrl = req.session.redirectTo || '/campgrounds';
+            delete req.session.redirectTo;
+            res.redirect(redirectUrl);
+        });
     }, 
 
     getLogout(req, res, next){

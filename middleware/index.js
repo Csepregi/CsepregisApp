@@ -1,5 +1,6 @@
 var Campground = require("../models/campground");
 var Comment = require("../models/comment");
+var User = require('../models/user');
 
 // all the middleare goes here
 module.exports = {
@@ -9,7 +10,6 @@ module.exports = {
         Promise.resolve(fn(req, res, next))
             .catch(next);
     },
-
 
     checkCampgroundOwnership(req, res, next) {
     if(req.isAuthenticated()){
@@ -56,10 +56,9 @@ module.exports = {
 
     // this fn can be anywhere , => the user have to be loged in
     isLoggedIn (req, res, next){ 
-    if(req.isAuthenticated()){
-        return next();
-    }
+    if(req.isAuthenticated())return next();
     req.flash("error", "Please login first"); //already do not write anything
+    req.session.redirectTo = res.originalUrl;
     res.redirect("/login");
     }
 

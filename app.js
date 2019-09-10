@@ -67,6 +67,10 @@ app.use(function(req, res, next){   //we pass every route the current user, and 
     // res.status(err.status || 500);
     // res.render('error');
     res.locals.currentUser = req.user;
+    //
+    res.locals.success = req.session.success || '';
+    delete req.session.success;
+    //
     res.locals.error = req.flash("error");//if there is anything in the template it will exit in the message template ,variable
     res.locals.success = req.flash("success");
     next();
