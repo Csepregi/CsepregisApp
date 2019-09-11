@@ -22,7 +22,7 @@ const commentRoutes    = require("./routes/comments"),
 
 mongoose.Promise = global.Promise;
 
-const url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp, { useNewUrlParser: true }"
+const url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp, { useNewUrlParser: true, useCreateIndex: true }"
 mongoose.connect(url);
 
 

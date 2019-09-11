@@ -34,6 +34,7 @@ module.exports = {
     },
 
     getLogin(req, res, next) {
+        if(req.isAuthenticated()) return res.redirect('/campgrounds');
         res.render("login", {page:'login'});//under the key of message we run the message what we defined in the middleware
     },
 
