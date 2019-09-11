@@ -3,7 +3,6 @@ const router = express.Router();
 const {errorHandler, isLoggedIn, checkCampgroundOwnership} = require("../middleware");
 const { cloudinary, storage } = require('../cloudinary');
 const multer = require('multer');
-// var NodeGeocoder = require('node-geocoder');
 
 const upload = multer({ storage });
 
@@ -31,7 +30,7 @@ router.post("/", isLoggedIn, upload.array('images', 2),  errorHandler(createCamp
 router.get("/:id", showCampground);
 
 //Edit campground route
-router.get("/:id/edit", checkCampgroundOwnership, errorHandler(getEditCampground));
+router.get("/:id/edit", checkCampgroundOwnership, getEditCampground);
 
 router.put("/:id", upload.array('images', 2), checkCampgroundOwnership, errorHandler(editCampground));
  

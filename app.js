@@ -1,14 +1,11 @@
 require('dotenv').config();
 const express         = require("express"),
     app             = express(),
-    bodyParser      = require("body-parser"),
     mongoose        = require("mongoose"), 
     flash           = require("connect-flash"),
     passport        = require("passport"),
     LocalStrategy   = require("passport-local"),
     methodOverride = require("method-override"),
-    Campground      = require("./models/campground"),
-    Comment         = require("./models/comment"),
     User            = require("./models/user"),
     session         = require('express-session'),
     seedDB          = require("./seeds");
@@ -30,8 +27,8 @@ mongoose.connect(url, { useNewUrlParser: true } )
       .then(() => console.log(`Database connected`))
       .catch(err => console.log(`Database connection error: ${err.message}`));
 
-
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public")); //dirname refers to the directory that the script is running
 app.use(methodOverride("_method"));
