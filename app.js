@@ -30,14 +30,6 @@ mongoose.connect(url, { useNewUrlParser: true } )
       .then(() => console.log(`Database connected`))
       .catch(err => console.log(`Database connection error: ${err.message}`));
 
-// mongoose.connect("mongodb+srv://gabor:hangfive2019@yelpcamp-f3q6z.mongodb.net/test", {
-//     useNewUrlParser: true,
-//     useCreateIndex: true
-// }).then(() => {
-//     console.log('Connected to DB!');
-// }).catch(err => {
-//     console.log('ERROR:', err.message);
-// });
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");

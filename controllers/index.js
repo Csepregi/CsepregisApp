@@ -9,18 +9,28 @@ module.exports = {
     },
 
     async postRegister(req, res, next){
-        const newUser = new User({username: req.body.username});
+        //const newUser = new User({username: req.body.username});
+        try {
+            let user = await User.register(new User(req.body), req.body.password);
+            req.login(user, function(err) {
+                if (err) { return next(err); }
+                req.session.success = `Welcome to Surf Shop, ${user.username}!`;
+                res.redirect('/campgrounds');
+              });
+        } catch (err) {
+            const username = req.body;
+            let error = err.message;
+            if (error.includes('duplicate') && error.includes('index: username_1 dup key')) {
+                error = 'A user with the given username is already registered';
+            }
+            res.render('register', { title: 'Register', username, error })
+        }
         //await User.register(newUser, req.body.password)
            // passport.authenticate("local")(req, res, () => {  //local strategy
                 //req.flash("success", "Welcome to the YelpCamp " + newUser.username);
                 //res.redirect("/campgrounds");            
             //})
-            let user = await User.register(newUser, req.body.password);
-            req.login(user, function(err) {
-              if (err) { return next(err); }
-              req.session.success = `Welcome to Surf Shop, ${user.username}!`;
-              res.redirect('/campgrounds');
-            });
+           
     },
 
     getLogin(req, res, next) {

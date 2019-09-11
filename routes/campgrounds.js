@@ -26,7 +26,7 @@ router.get("/", errorHandler(getCampgrounds));
 //NEW - show form to create new campground
 router.get("/new", isLoggedIn, newCampground);
 
-router.post("/",upload.array('images', 2), isLoggedIn, errorHandler(createCampground))
+router.post("/", isLoggedIn, upload.array('images', 2),  errorHandler(createCampground))
 //SHOW - shows more info about one campground
 router.get("/:id", showCampground);
 
