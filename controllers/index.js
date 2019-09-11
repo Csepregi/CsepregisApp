@@ -29,9 +29,9 @@ module.exports = {
 
     async postLogin(req, res, next){
         const {username, password} = req.body;
-        const {user, err} = await User.authenticate()(username, passport);
+        const {user, error} = await User.authenticate()(username, password);
         if(!user && error) return next(error);
-        res.login(user, function(err){
+        req.login(user, function(err){
             if(err) return next(err);
             req.session.success = `Welcome back ${username}!`;
             const redirectUrl = req.session.redirectTo || '/campgrounds';
