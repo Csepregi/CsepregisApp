@@ -2,11 +2,15 @@
 
 Introduction to what is about the Csepregis App.
 
-Things you'll need:
+Tech:
 
-* [Node.js](https://nodejs.org)
-* [javascript](https://www.npmjs.com/package/markdown-it)
-* [css, html](/docs/editor/tasks)
+* [Node.js]
+* [express.js]
+* [ejs]
+* [es6]
+* [Mapbox]
+* [css, html]
 
-## Section Title
+## 
+
  
