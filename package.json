@@ -10,6 +10,7 @@
   "author": "gabor",
   "license": "ISC",
   "dependencies": {
+    "@mapbox/mapbox-sdk": "^0.7.0",
     "body-parser": "^1.18.3",
     "cloudinary": "^1.14.0",
     "connect-flash": "^0.1.1",

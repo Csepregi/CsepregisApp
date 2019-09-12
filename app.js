@@ -30,6 +30,7 @@ mongoose.connect(url, { useNewUrlParser: true } )
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use(express.static('/public'));
 app.use(express.static(__dirname + "/public")); //dirname refers to the directory that the script is running
 app.use(methodOverride("_method"));
 app.use(flash());
