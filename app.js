@@ -25,7 +25,7 @@ const commentRoutes    = require("./routes/comments"),
 //mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true , useCreateIndex: true });
 
 const uri = process.env.DATABASEURL
-MongoClient.connect(uri, function(err, client) {
+mongodb.connect(uri,{ useNewUrlParser: true,useUnifiedTopology: true  } , function(err, client) {
    if(err) {
         console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
    }
