@@ -1,15 +1,9 @@
+require('dotenv').config();
 const Campground = require('../models/campground');
-const NodeGeocoder = require('node-geocoder');
-const { cloudinary } = require('../cloudinary');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const geocodingClient = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN });
 
-  const options = {
-    provider: 'google',
-    httpAdapter: 'https',
-    apiKey: process.env.GEOCODER_API_KEY,
-    formatter: null
-  };
-   
-  const geocoder = NodeGeocoder(options);
+const { cloudinary } = require('../cloudinary');
 
 module.exports = {
     async getCampgrounds(req, res, next){
@@ -32,18 +26,16 @@ module.exports = {
             id: req.user._id,
             username: req.user.username
             }
-            geocoder.geocode(req.body.location, (err, data) => {
-            if (err || !data.length) {
-                console.log(err);
-                req.flash('error', 'Invalid address');
-                return res.redirect('back');
-            }
-            req.body.campground.lat = data[0].latitude;
-            req.body.campground.lng = data[0].longitude;
-            req.body.campground.location = data[0].formattedAddress;
-        })
         
-        }
+          }
+          let response = await geocodingClient
+        .forwardGeocode({
+          query: req.body.campground.location,
+          limit: 1
+        })
+        .send();
+        req.body.campground.coordinates = response.body.features[0].geometry.coordinates;
+          
         let campground = await Campground.create(req.body.campground)
         res.redirect('/campgrounds/' + campground.id);
         }, 
@@ -83,16 +75,7 @@ module.exports = {
                 }
               }
             }
-            geocoder.geocode(req.body.location, (err, data) => {
-                if (err || !data.length) {
-                    console.log(err);
-                    req.flash('error', 'Invalid address');
-                    return res.redirect('back');
-                }
-                req.body.campground.lat = data[0].latitude;
-                req.body.campground.lng = data[0].longitude;
-                req.body.campground.location = data[0].formattedAddress;
-            })
+          
             //check if there are any new images for upload
             if(req.files){
             for(const file of req.files){              // add images to post.images array
@@ -101,13 +84,21 @@ module.exports = {
                 public_id: file.public_id
               });
             }
-
-           
+          }
+          // check if location was updated
+          if(req.body.campground.location !== campground.location) {
+            let response = await geocodingClient
+              .forwardGeocode({
+                query: req.body.campground.location,
+                limit: 1
+              })
+              .send();
+            campground.coordinates = response.body.features[0].geometry.coordinates;
+            campground.location = req.body.campground.location;
           }
           campground.name = req.body.campground.name;
           campground.description = req.body.campground.description;
-         // campground.location = req.body.campground.location;
-
+      
           campground.save();
           res.redirect(`/campgrounds/${campground._id}`);
           },
