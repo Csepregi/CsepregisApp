@@ -15,23 +15,24 @@ const commentRoutes    = require("./routes/comments"),
     campgroundRoutes = require("./routes/campgrounds"),
     indexRoutes       = require("./routes/index");
 
-    console.log(process.env.DATABASEURL);
 
-mongoose.Promise = global.Promise;
+//mongoose.Promise = global.Promise;
 
-const url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp, { useNewUrlParser: true, useCreateIndex: true }"
-mongoose.connect(url);
+//const url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp, { useNewUrlParser: true, useCreateIndex: true }"
+//url
+//mongoose.connect(process.env.DATABASEURL);
+mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true , useCreateIndex: true });
 
 
-mongoose.connect(url, { useNewUrlParser: true, useCreateIndex: true } )
-      .then(() => console.log(`Database connected`))
-      .catch(err => console.log(`Database connection error: ${err.message}`));
+// mongoose.connect(url, { useNewUrlParser: true, useCreateIndex: true } )
+//       .then(() => console.log(`Database connected`))
+//       .catch(err => console.log(`Database connection error: ${err.message}`));
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.set("view engine", "ejs");
-app.use(express.static('/public'));
 app.use(express.static(__dirname + "/public")); //dirname refers to the directory that the script is running
+app.use(express.static('/public'));
 app.use(methodOverride("_method"));
 app.use(flash());
 //seedDB(); //seed the database //we export the function
