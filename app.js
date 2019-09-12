@@ -22,18 +22,8 @@ const commentRoutes    = require("./routes/comments"),
 //const url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp, { useNewUrlParser: true, useCreateIndex: true }"
 //url
 //mongoose.connect(process.env.DATABASEURL);
-//mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true , useCreateIndex: true });
+mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true , useCreateIndex: true });
 
-const uri = process.env.DATABASEURL
-mongodb.connect(uri,{ useNewUrlParser: true,useUnifiedTopology: true  } , function(err, client) {
-   if(err) {
-        console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
-   }
-   console.log('Connected...');
-   const collection = client.db("test").collection("devices");
-   // perform actions on the collection object
-   client.close();
-});
 
 
 // mongoose.connect(url, { useNewUrlParser: true, useCreateIndex: true } )
