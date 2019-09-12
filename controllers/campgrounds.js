@@ -1,19 +1,9 @@
 require('dotenv').config();
 const Campground = require('../models/campground');
-//const NodeGeocoder = require('node-geocoder');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const geocodingClient = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN });
 
 const { cloudinary } = require('../cloudinary');
-
-  // const options = {
-  //   provider: 'google',
-  //   httpAdapter: 'https',
-  //   apiKey: process.env.GEOCODER_API_KEY,
-  //   formatter: null
-  // };
-   
-  //const geocoder = NodeGeocoder(options);
 
 module.exports = {
     async getCampgrounds(req, res, next){
@@ -36,16 +26,7 @@ module.exports = {
             id: req.user._id,
             username: req.user.username
             }
-        //     geocoder.geocode(req.body.location, (err, data) => {
-        //     if (err || !data.length) {
-        //         console.log(err);
-        //         req.flash('error', 'Invalid address');
-        //         return res.redirect('back');
-        //     }
-        //     req.body.campground.lat = data[0].latitude;
-        //     req.body.campground.lng = data[0].longitude;
-        //     req.body.campground.location = data[0].formattedAddress;
-        // })
+        
           }
           let response = await geocodingClient
         .forwardGeocode({
@@ -117,8 +98,7 @@ module.exports = {
           }
           campground.name = req.body.campground.name;
           campground.description = req.body.campground.description;
-         // campground.location = req.body.campground.location;
-
+      
           campground.save();
           res.redirect(`/campgrounds/${campground._id}`);
           },
