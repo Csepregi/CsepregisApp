@@ -23,7 +23,7 @@ const url = process.env.DATABASEURL || "mongodb://localhost: 27017/yelp_camp, { 
 mongoose.connect(url);
 
 
-mongoose.connect(url, { useNewUrlParser: true } )
+mongoose.connect(url, { useNewUrlParser: true, useCreateIndex: true } )
       .then(() => console.log(`Database connected`))
       .catch(err => console.log(`Database connection error: ${err.message}`));
 
