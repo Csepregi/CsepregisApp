@@ -2,7 +2,6 @@ require('dotenv').config();
 const express         = require("express"),
     app             = express(),
     mongoose        = require("mongoose"), 
-    mongodb         = require("mongodb").MongoClient,
     flash           = require("connect-flash"),
     passport        = require("passport"),
     LocalStrategy   = require("passport-local"),
