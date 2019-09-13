@@ -1,9 +1,6 @@
 {
   "name": "yelpcamp",
   "version": "1.0.0",
-  "engines": {
-    "node": "10.15.3"
-  },
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -16,6 +13,7 @@
     "@mapbox/mapbox-sdk": "^0.7.0",
     "cloudinary": "^1.14.0",
     "connect-flash": "^0.1.1",
+    "core-util-is": "^1.0.2",
     "dotenv": "^8.1.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
@@ -32,5 +30,8 @@
   },
   "devDependencies": {
     "locus": "^2.0.0"
+  },
+  "engines": {
+    "node": "10.15.3"
   }
 }
