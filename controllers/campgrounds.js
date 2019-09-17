@@ -57,11 +57,13 @@ module.exports = {
                     console.log("hello");
                     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${foundCampground.location},uk&units=metric&appid=${process.env.WeatherToken}`)
                     const json = await response.json();
-                    const icon = json.weather[0].icon;
-                    const temp = json.main.temp;
-                    console.log(temp);
+            
+                    const weather = {
+                      icon: json.weather[0].icon,
+                      temp: json.main.temp
+                    }
                     //render show template that campground
-                    res.render("campgrounds/show", {campground: foundCampground, temp: temp, icon: icon});
+                    res.render("campgrounds/show", {campground: foundCampground, weather: weather});
                 }
             })
         },
