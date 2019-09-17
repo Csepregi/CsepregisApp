@@ -27,6 +27,7 @@ router.get("/new", isLoggedIn, newCampground);
 
 router.post("/", isLoggedIn, upload.array('images', 2),  errorHandler(createCampground))
 //SHOW - shows more info about one campground
+
 router.get("/:id", showCampground);
 
 //Edit campground route

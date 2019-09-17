@@ -2,6 +2,8 @@ require('dotenv').config();
 const Campground = require('../models/campground');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const geocodingClient = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN });
+const fetch = require('node-fetch');
+//const weatherApi = `https://api.openweathermap.org/data/2.5/weather?q=${campground.location},uk&units=metric&appid=${process.env.WeatherToken}`
 
 const { cloudinary } = require('../cloudinary');
 
@@ -12,8 +14,13 @@ module.exports = {
     }, 
 
     async newCampground (req, res, next)  {
+          console.log("ciao");
            res.render("campgrounds/new")
     },
+
+  // async postWeather(req, res){
+    
+  //  },
 
     async createCampground(req, res, next){
         req.body.campground.images = [];
@@ -42,13 +49,19 @@ module.exports = {
 
         async showCampground(req, res, next){
          //find the campground with provided id
-            Campground.findById(req.params.id).populate("comments likes").exec((err, foundCampground) => {
+            Campground.findById(req.params.id).populate("comments likes").exec(async (err, foundCampground) => {
                 if(err){
                     console.log(err)
                 } else {
                     console.log(foundCampground);
+                    console.log("hello");
+                    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${foundCampground.location},uk&units=metric&appid=${process.env.WeatherToken}`)
+                    const json = await response.json();
+                    const icon = json.weather[0].icon;
+                    const temp = json.main.temp;
+                    console.log(temp);
                     //render show template that campground
-                    res.render("campgrounds/show", {campground: foundCampground});
+                    res.render("campgrounds/show", {campground: foundCampground, temp: temp, icon: icon});
                 }
             })
         },
