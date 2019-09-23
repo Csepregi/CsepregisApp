@@ -1,0 +1,18 @@
+<% include ./partials/header %> 
+
+
+        <script>
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(function(position)
+                     {
+                        console.log(position.coords.latitude);
+                        console.log(position.coords.longitude);
+                    });
+                } else {
+                console.log('geolocation is not available');
+                }
+            </script>
+
+
+
+ <% include ./partials/footer %> 

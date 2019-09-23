@@ -13,14 +13,15 @@ module.exports = {
         res.render("campgrounds/index", {campgrounds, currentUser: req.user, page: 'campgrounds'})
     }, 
 
+     getFamilyMap(req, res, next){
+      console.log("ciao");
+      res.render("mapFamily")
+    },
+
     async newCampground (req, res, next)  {
           console.log("ciao");
            res.render("campgrounds/new")
     },
-
-  // async postWeather(req, res){
-    
-  //  },
 
     async createCampground(req, res, next){
         req.body.campground.images = [];

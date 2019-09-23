@@ -12,8 +12,9 @@ const express         = require("express"),
 
 //requiring routes
 const commentRoutes    = require("./routes/comments"),
-    campgroundRoutes = require("./routes/campgrounds"),
-    indexRoutes       = require("./routes/index");
+    campgroundRoutes   = require("./routes/campgrounds"),
+    indexRoutes        = require("./routes/index"),
+    familyMapRoutes    = require("./routes/familyMap");
 
 
 //mongoose.Promise = global.Promise;
@@ -72,11 +73,10 @@ app.use(function(req, res, next){   //we pass every route the current user, and 
 
 // SCHEMA SETUP
 
-
-
 app.use("/", indexRoutes);
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);
+app.use("/", familyMapRoutes);
 
 var port = process.env.PORT || 3000;
 

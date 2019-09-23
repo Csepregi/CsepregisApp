@@ -22,6 +22,7 @@ var { getCampgrounds,
 //INDEX - show all campgrounds
 router.get("/", errorHandler(getCampgrounds));
 
+
 //NEW - show form to create new campground
 router.get("/new", isLoggedIn, newCampground);
 

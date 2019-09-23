@@ -32,6 +32,9 @@
               <ul class="nav navbar-nav">
                 <li class="<%= typeof page !== 'undefined' && page === 'csepregis' ? 'active' : '' %>"><a href="/campgrounds">Home</a></li>
               </ul>
+              <ul class="nav navbar-nav">
+                    <li><a href="/familyMap">FamilyMap</a></li>
+                  </ul>
               <ul class="nav navbar-nav navbar-right">
                   <% if(!currentUser){ %>
                       <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>"><a href="/login">Login</a></li>
