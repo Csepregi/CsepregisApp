@@ -1,13 +1,31 @@
 <% include ./partials/header %> 
 
+<div>
+    <p id="latitude"></p>
+    <p id="longitude"></p>
+</div>
 
         <script>
                 if ("geolocation" in navigator) {
-                    navigator.geolocation.getCurrentPosition(function(position)
-                     {
-                        console.log(position.coords.latitude);
-                        console.log(position.coords.longitude);
-                    });
+                    navigator.geolocation.getCurrentPosition(async (position) => {
+                        const lat = position.coords.latitude;
+                        const long = position.coords.longitude;
+                        document.getElementById('latitude').textContent = lat;
+                        document.getElementById('longitude').textContent = long;
+
+                        const data = {lat , long};
+                        const options = {
+                            method: 'POST',
+                            headers: {
+                            'Content-Type': 'application/json'
+                            // 'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: JSON.stringify(data) 
+                        }
+                        const response = await fetch('/familyMap', options);
+                        const json = await response.json();
+                            console.log(json);
+                        });
                 } else {
                 console.log('geolocation is not available');
                 }
