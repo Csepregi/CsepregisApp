@@ -4,19 +4,19 @@ const passport = require("passport");
 
 module.exports = {
 
-    getRegister(req, res, next)  {
-        res.render("register", {page:'register'});
+    getRegister(req, res, next) {
+        res.render("register", { page: 'register' });
     },
 
-    async postRegister(req, res, next){
+    async postRegister(req, res, next) {
         //const newUser = new User({username: req.body.username});
         try {
             let user = await User.register(new User(req.body), req.body.password);
-            req.login(user, function(err) {
+            req.login(user, function (err) {
                 if (err) { return next(err); }
-                req.session.success = `Welcome to Surf Shop, ${user.username}!`;
+                req.session.success = `Welcome to Csepregis, ${user.username}!`;
                 res.redirect('/campgrounds');
-              });
+            });
         } catch (err) {
             const username = req.body;
             let error = err.message;
@@ -26,37 +26,37 @@ module.exports = {
             res.render('register', { title: 'Register', username, error })
         }
         //await User.register(newUser, req.body.password)
-           // passport.authenticate("local")(req, res, () => {  //local strategy
-                //req.flash("success", "Welcome to the YelpCamp " + newUser.username);
-                //res.redirect("/campgrounds");            
-            //})
-           
+        // passport.authenticate("local")(req, res, () => {  //local strategy
+        //req.flash("success", "Welcome to the Csepregis " + newUser.username);
+        //res.redirect("/campgrounds");            
+        //})
+
     },
 
     getLogin(req, res, next) {
-        if(req.isAuthenticated()) return res.redirect('/campgrounds');
-        res.render("login", {page:'login'});//under the key of message we run the message what we defined in the middleware
+        if (req.isAuthenticated()) return res.redirect('/campgrounds');
+        res.render("login", { page: 'login' });//under the key of message we run the message what we defined in the middleware
     },
 
-    async postLogin(req, res, next){
-        const {username, password} = req.body;
-        const {user, error} = await User.authenticate()(username, password);
-        if(!user && error) {
+    async postLogin(req, res, next) {
+        const { username, password } = req.body;
+        const { user, error } = await User.authenticate()(username, password);
+        if (!user && error) {
             req.flash("error", error.message)
             return res.redirect("back");;//next(error);
         } else {
-            req.login(user, function(err){
-                if(err) return req.flash("error", err.message);//next(err);
+            req.login(user, function (err) {
+                if (err) return req.flash("error", err.message);//next(err);
                 req.session.success = `Welcome back ${username}!`;
                 const redirectUrl = req.session.redirectTo || '/campgrounds';
                 delete req.session.redirectTo;
                 res.redirect(redirectUrl);
             });
         }
-       
-    }, 
 
-    getLogout(req, res, next){
+    },
+
+    getLogout(req, res, next) {
         req.logout();
         req.flash("success", "logged you out");
         res.redirect("/campgrounds");
@@ -64,7 +64,7 @@ module.exports = {
 }
 //     req.flash("success", "logged you out");
 //     res.redirect("/campgrounds");
-    
+
     //     req.flash("success", "logged you out");
     //     res.redirect("/campgrounds");
 
@@ -86,4 +86,3 @@ module.exports = {
     // })  
     // }
 
-    

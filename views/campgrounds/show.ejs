@@ -1,6 +1,6 @@
 <% include ../partials/header %>
 
-    <style>
+<style>
     body {
         margin: 0;
         padding: 0;
@@ -10,6 +10,7 @@
         height: 400px;
         width: 100%;
     }
+
     .marker {
         background-image: url('/images/mapbox-icon.png');
         background-size: cover;
@@ -17,166 +18,177 @@
         height: 50px;
         border-radius: 50%;
         cursor: pointer;
-        }
-        .mapboxgl-popup {
-        max-width: 200px;
-        }
+    }
 
-        .mapboxgl-popup-content {
+    .mapboxgl-popup {
+        max-width: 200px;
+    }
+
+    .mapboxgl-popup-content {
         text-align: center;
         font-family: 'Open Sans', sans-serif;
-        }
-    </style>
+    }
+</style>
 
-    <div class="row">
-        <div class="col-md-3">
-            <p class="lead"></p>
-            <div class="list-group">
-                <li class="list-group-item active">Temperature: <%= weather.temp %> °C  <img src='http://openweathermap.org/img/w/<%= weather.icon %>.png'/></li>
-                <li class="list-group-item">Info 2</li>
-                <li class="list-group-item">Info 3</li>
-            </div>
-            <div id="map"></div>
+<div class="row">
+    <div class="col-md-3">
+        <p class="lead"></p>
+        <div class="list-group">
+            <li class="list-group-item active">Temperature: <%= weather.temp %> °C <img
+                    src='http://openweathermap.org/img/w/<%= weather.icon %>.png' /></li>
+
+            <li class="list-group-item">Info 2</li>
+            <li class="list-group-item">Info 3</li>
         </div>
-        
-        <div class="col-md-9">
-            <div class="thumbnail">
-                <div>
+        <div id="map"></div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="thumbnail">
+            <img class="image-responsive" src="<%= campground.image %>">
+            <div>
                 <% campground.images.forEach(function(img){ %>
-                    <img class="image-responsive" src="<%= img.url %>">
-               <% }); %>
+                <img class="image-responsive" src="<%= img.url %>">
+                <% }); %>
             </div>
-                <div class="caption">
-                    <h4><a><%=campground.name%></a></h4>
-                    <div class="pull-right">
-                            <button type="button" class="btn btn-xs btn-primary" data-toggle="modal"
-                                    data-target="#campgroundLikes">
-                                <span>Total likes: <i class="fas fa-thumbs-up"></i> <%= campground.likes.length %></span>
-                            </button>
-                        </div>
-                        <div style="padding-bottom: 10px;">
-                            <form action="/campgrounds/<%= campground._id %>/like" method="POST">
-                                <div class="btn-group">
-                                    <% if (currentUser && campground.likes.some(function (like) {
+            <div class="caption">
+                <h4><a><%=campground.name%></a></h4>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal"
+                        data-target="#campgroundLikes">
+                        <span>Total likes: <i class="fas fa-thumbs-up"></i> <%= campground.likes.length %></span>
+                    </button>
+                </div>
+                <div style="padding-bottom: 10px;">
+                    <form action="/campgrounds/<%= campground._id %>/like" method="POST">
+                        <div class="btn-group">
+                            <% if (currentUser && campground.likes.some(function (like) {
                                         return like.equals(currentUser._id)
                                     })) { %>
-                                    <button class="btn btn-sm btn-primary">
-                                        <i class="fas fa-thumbs-up"></i> Liked (<%= campground.likes.length %>)
-                                    </button>
-                                    <% } else { %>
-                                    <button class="btn btn-sm btn-secondary">
-                                        <i class="fas fa-thumbs-up"></i> Like (<%= campground.likes.length %>)
-                                    </button>
-                                    <% } %>
-                                    <button type="button" class="btn btn-sm btn-default" data-toggle="modal"
-                                            data-target="#campgroundLikes">See more details
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    <p><%= campground.description %></p>
-                    <p>
-                        <em>Submitted by <%= campground.author.username %></em>
-                    </p>
-                    <% if(currentUser && campground.author.id.equals(currentUser._id)){ %>
-                       <a class="btn btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
-                       <form class="delete-form" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
-                        <button class="btn btn-danger">Delete</button>                   
-                    </form>
-                    <% }%>
-                </div>
-            </div>
-            <div class="well">
-                <div class="text-right">
-                    <a class="btn btn-success" href="/campgrounds/<%= campground._id %>/comments/new">Add New Comment</a>
-                </div>
-                <hr>
-                
-                <% campground.comments.forEach(function(comment) { %>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <strong><%= comment.author.username %></strong>
-                            
-                            <span class="pull-right">10 days ago</span>
-                            <p>
-                                <%= comment.text %> 
-                            </p>
-                            <% if(currentUser && comment.author.id.equals(currentUser._id)){ %>
-                            <a class="btn btn-xs btn-warning" 
-                            href="/campgrounds/<%=campground._id %>/comments/<%=comment._id %>/edit">Edit</a>
-                            <form class="delete-form" action="/campgrounds/<%=campground._id %>/comments/<%=comment._id %>?_method=DELETE" method="POST">
-                                <input type="submit" class="btn btn-xs btn-danger" value="Delete">
-                            </form>
+                            <button class="btn btn-sm btn-primary">
+                                <i class="fas fa-thumbs-up"></i> Liked (<%= campground.likes.length %>)
+                            </button>
+                            <% } else { %>
+                            <button class="btn btn-sm btn-secondary">
+                                <i class="fas fa-thumbs-up"></i> Like (<%= campground.likes.length %>)
+                            </button>
                             <% } %>
+                            <button type="button" class="btn btn-sm btn-default" data-toggle="modal"
+                                data-target="#campgroundLikes">See more details
+                            </button>
                         </div>
-                    </div>
-                   
-                <% }) %>
+                    </form>
+                </div>
+                <p><%= campground.description %></p>
+                <p>
+                    <em>Submitted by <%= campground.author.username %></em>
+                </p>
+                <% if(currentUser && campground.author.id.equals(currentUser._id)){ %>
+                <a class="btn btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+                <form class="delete-form" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+                    <button class="btn btn-danger">Delete</button>
+                </form>
+                <% }%>
             </div>
         </div>
+        <div class="well">
+            <div class="text-right">
+                <a class="btn btn-success" href="/campgrounds/<%= campground._id %>/comments/new">Add New Comment</a>
+            </div>
+            <hr>
+
+            <% campground.comments.forEach(function(comment) { %>
+            <div class="row">
+                <div class="col-md-12">
+                    <strong><%= comment.author.username %></strong>
+
+                    <span class="pull-right">10 days ago</span>
+                    <p>
+                        <%= comment.text %>
+                    </p>
+                    <% if(currentUser && comment.author.id.equals(currentUser._id)){ %>
+                    <a class="btn btn-xs btn-warning"
+                        href="/campgrounds/<%=campground._id %>/comments/<%=comment._id %>/edit">Edit</a>
+                    <form class="delete-form"
+                        action="/campgrounds/<%=campground._id %>/comments/<%=comment._id %>?_method=DELETE"
+                        method="POST">
+                        <input type="submit" class="btn btn-xs btn-danger" value="Delete">
+                    </form>
+                    <% } %>
+                </div>
+            </div>
+
+            <% }) %>
+        </div>
     </div>
+</div>
 
 <!-- campground Likes Modal -->
 <div id="campgroundLikes" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">campground likes: <%= campground.likes.length %></h4>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-striped">
-                        <thead>
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">campground likes: <%= campground.likes.length %></h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
                         <tr>
                             <th>Liked by:</th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody>
                         <% campground.likes.forEach(function(like) { %>
-                            <tr>
-                                <td><span class="badge"><i class="fas fa-user"></i></span> <%= like.username %></td>
-                            </tr>
+                        <tr>
+                            <td><span class="badge"><i class="fas fa-user"></i></span> <%= like.username %></td>
+                        </tr>
                         <% }); %>
                         <% if (campground.likes.length === 0) { %>
-                            <tr>
-                                <td><em>No likes yet.</em></td>
-                            </tr>
+                        <tr>
+                            <td><em>No likes yet.</em></td>
+                        </tr>
                         <% } %>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
+<script>
 
-    var campground = <%- JSON.stringify(campground) %>;
+    var campground = <%- JSON.stringify(campground) %>
 
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZ2Fib3IwMiIsImEiOiJjazBnZ2VpNjMwNnV3M2xxYTZxeThhOTBrIn0.QagYIKXZ0xQV0YTTPYCdPw';
-    
+
+
+
+        console.log(campground)
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZ2Fib3IwMiIsImEiOiJjazd2czV4czYxZTZmM29uMTc2OXIwZjIxIn0.w1GCvp_gcHuUFHMQ-aYaYQ';
     var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v10',
         center: campground.coordinates,
+        //center: [-74.5, 40],
         zoom: 8
     });
-            
-        // create a HTML element for post location marker
-        var el = document.createElement('div');
-        el.className = 'marker';
 
-        // make a marker for our location and add to the map
-        new mapboxgl.Marker(el)
+    // create a HTML element for post location marker
+    var el = document.createElement('div');
+    el.className = 'marker';
+
+    // make a marker for our location and add to the map
+    new mapboxgl.Marker(el)
         .setLngLat(campground.coordinates)
         .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
             .setHTML('<h3>' + campground.name + '</h3><p>' + campground.location + '</p>'))
         .addTo(map);
-                    
+
 
 
         // const Apiurl = 'https://samples.openweathermap.org/data/2.5/weather?q=London,uk&appid=8cc901842970fe991c9aa0177db7f4cf'
@@ -188,6 +200,6 @@
         // }
         // catchSurf()
         //     .then(res=>console.log(res))
-         </script>
+</script>
 
 <% include ../partials/footer %>

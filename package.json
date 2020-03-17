@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node app.js"
   },
   "author": "gabor",
@@ -31,7 +31,10 @@
     "request": "^2.88.0"
   },
   "devDependencies": {
-    "locus": "^2.0.1"
+    "jest": "^24.9.0",
+    "jest-puppeteer": "^3.9.0",
+    "locus": "^2.0.1",
+    "puppeteer": "^2.0.0"
   },
   "engines": {
     "node": "10.15.3"
